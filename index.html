@@ -1,0 +1,64 @@
+<<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+</head>
+<body>
+	<link rel="stylesheet" type="text/css" href="node_modules/bolt.new/dist/bolt.css">
+  <link rel="stylesheet" type="text/css" href="Summaries.js">
+
+<header class="header bg-primary text-white">
+	<div class="container">
+		<h1>Youtube Summarizer</h1>
+		<nav class="nav">
+			<a href="#dashboard" class="nav-link">Dashboard</a>
+			<a href="#login"  id="authLink" class="nav-link">Login</a>
+		</nav>
+	</div>
+</header>
+<section id="input-section" class="container">
+  <form id="videoForm" class="form">
+    <div class="form-group">
+      <label for="youtubeUrl">YouTube URL:</label>
+      <input type="url" id="youtubeUrl" class="form-control" placeholder="Enter YouTube URL" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Generate Summary</button>
+  </form>
+</section>
+<section id="summaries" class="container">
+  <h2>Your Summaries</h2>
+  <div id="summaryList" class="grid grid-cols-1 gap-4">
+    <!-- Summaries will be appended here dynamically -->
+  </div>
+</section>
+<script type="text/javascript">
+	document.getElementById('videoForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const youtubeUrl = document.getElementById('youtubeUrl').value;
+
+  const response = await fetch('/process-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: youtubeUrl }),
+  });
+
+  const result = await response.json();
+  displaySummary(result.summary);
+});
+	function displaySummary(summary) {
+  const summaryList = document.getElementById('summaryList');
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `
+    <div class="card-body">
+      <p>${summary}</p>
+    </div>
+  `;
+  summaryList.appendChild(card);
+}
+</script>
+
+</body>
+</html>
